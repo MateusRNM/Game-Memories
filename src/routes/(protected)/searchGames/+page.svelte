@@ -7,14 +7,17 @@
     let games = $state([]); 
     let isLoading: boolean = $state(false);
 
+    let debounceTimeout = null;
+
     $effect(() => {
+        if(debounceTimeout) clearTimeout(debounceTimeout);
         if(searchText === "" || !$isOnline){
             games = [];
             isLoading = false;
             return;
         }
 
-        const debounceTimeout = setTimeout(async () => {
+        debounceTimeout = setTimeout(async () => {
             isLoading = true;
             games = [];
             try {
@@ -22,7 +25,7 @@
             } finally {
                 isLoading = false;
             }
-        }, 500);
+        }, 1000);
 
         return () => {
             clearTimeout(debounceTimeout);

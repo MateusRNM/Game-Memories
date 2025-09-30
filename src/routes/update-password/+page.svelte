@@ -82,10 +82,10 @@
 					</form>
 
 					{#if error}
-						<div class="alert alert-danger mt-4">{error}</div>
+						<div class="alert alert-danger mt-4" style="color:black;">{error}</div>
 					{/if}
 					{#if message}
-						<div class="alert alert-success mt-4">{message}</div>
+						<div class="alert alert-primary mt-4" style="color:black;">{message}</div>
 					{/if}
 				</div>
 			</div>

@@ -63,7 +63,7 @@ serve(async (req) => {
   try {
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
     const url = new URL(req.url);
@@ -80,7 +80,7 @@ serve(async (req) => {
         where 
             (name ~ *"${searchQuery}"* | alternative_names.name ~ *"${searchQuery}"* | franchises.name ~ *"${searchQuery}"*) 
             & cover.url != null;
-        limit 100;
+        limit 250;
     `;
 
     const rawResults = await callIgdb(
@@ -98,7 +98,9 @@ serve(async (req) => {
     const scoredAndFilteredGames = Array.from(uniqueGamesById.values())
       .filter((game: any) =>
         ![1, 2, 3, 5, 6, 7, 10, 13, 14].includes(game.category) &&
-        !game.name.toLowerCase().includes("bundle")
+        !["bundle", "edition", "goty"].some((termo) =>
+          game.name.toLowerCase().includes(termo)
+        )
       )
       .map((game: any) => {
         let relevanceScore = 0;
@@ -147,24 +149,36 @@ serve(async (req) => {
 
     const bestCandidates = Array.from(groupedGames.values());
     bestCandidates.sort((a, b) => b.relevanceScore - a.relevanceScore);
-    const finalResults = bestCandidates.slice(0, 25);
+    const finalResults = bestCandidates.slice(0, 40);
 
     const gamesToCache = finalResults.map((game: any) => ({
       id: game.id,
       name: game.name,
-      release_year: game.first_release_date ? new Date(game.first_release_date * 1000).getFullYear() : null,
-      cover_url: game.cover?.url ? `https:${game.cover.url.replace('t_thumb', 't_cover_big')}` : null,
-      platforms: game.platforms?.map((p: any) => p.name).join(', ') || null,
+      release_year: game.first_release_date
+        ? new Date(game.first_release_date * 1000).getFullYear()
+        : null,
+      cover_url: game.cover?.url
+        ? `https:${game.cover.url.replace("t_thumb", "t_cover_big")}`
+        : null,
+      platforms: game.platforms?.map((p: any) => p.name).join(", ") || null,
       summary: game.summary || null,
       igdb_data: game,
-      last_fetched_at: new Date().toISOString()
+      last_fetched_at: new Date().toISOString(),
     }));
 
-    if(gamesToCache.length > 0) {
-        supabaseAdmin.from('games_cache').upsert(gamesToCache).then(({ error }) => {
-            if (error) console.error("Falha ao salvar resultados da busca no cache:", error);
-            else console.log(`${gamesToCache.length} jogos salvos/atualizados no cache.`);
-        });
+    if (gamesToCache.length > 0) {
+      supabaseAdmin.from("games_cache").upsert(gamesToCache).then(
+        ({ error }) => {
+          if (error) {
+            console.error(
+              "Falha ao salvar resultados da busca no cache:",
+              error,
+            );
+          } else {console.log(
+              `${gamesToCache.length} jogos salvos/atualizados no cache.`,
+            );}
+        },
+      );
     }
 
     const formattedGames = finalResults.map((game: any) => {
