@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { getRedirectBaseUrl } from '$lib/utils/url.js';
-
 	let { data } = $props();
 	const supabase = data.supabase;
 
@@ -14,9 +12,8 @@
 		message = '';
 		error = '';
 		try {
-			const baseUrl: string = await getRedirectBaseUrl();
 			const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-				redirectTo: `${baseUrl}/update-password/`
+				redirectTo: `https://dazzling-melba-f05859.netlify.app/`
 			});
 			if (resetError) throw resetError;
 			message = `Link para redefinição de senha enviado para ${email}. Verifique sua caixa de entrada e spam.`;
@@ -40,7 +37,17 @@
 					<form onsubmit={handlePasswordReset}>
 						<div class="mb-3">
 							<label for="email" class="form-label">E-mail</label>
-							<input type="email" class="form-control" id="email" bind:value={email} required />
+							<input
+								autocomplete="off"
+								autocorrect="off"
+								autocapitalize="off"
+								spellcheck="false"
+								type="email"
+								class="form-control"
+								id="email"
+								bind:value={email}
+								required
+							/>
 						</div>
 
 						<div class="d-grid">
@@ -67,14 +74,14 @@
 </div>
 
 <style>
-    @font-face {
+	@font-face {
 		font-family: 'Oswald';
 		src: url('../../lib/assets/fonts/Oswald.ttf');
 	}
-    * {
-        color: white;
-        font-family: 'Oswald';
-    }
+	* {
+		color: white;
+		font-family: 'Oswald';
+	}
 	.bg-dark-custom {
 		background-color: #2b2b2b;
 	}

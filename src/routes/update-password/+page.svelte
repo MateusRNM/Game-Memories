@@ -48,6 +48,10 @@
 						<div class="mb-3">
 							<label for="newPassword" class="form-label">Nova Senha</label>
 							<input
+								autocomplete="off"
+								autocorrect="off"
+								autocapitalize="off"
+								spellcheck="false"
 								type="password"
 								class="form-control"
 								id="newPassword"
@@ -58,6 +62,10 @@
 						<div class="mb-4">
 							<label for="confirmPassword" class="form-label">Confirmar Nova Senha</label>
 							<input
+								autocomplete="off"
+								autocorrect="off"
+								autocapitalize="off"
+								spellcheck="false"
 								type="password"
 								class="form-control"
 								id="confirmPassword"
@@ -86,14 +94,14 @@
 </div>
 
 <style>
-    @font-face {
+	@font-face {
 		font-family: 'Oswald';
 		src: url('../../lib/assets/fonts/Oswald.ttf');
 	}
-    * {
-        color: white;
-        font-family: 'Oswald';
-    }
+	* {
+		color: white;
+		font-family: 'Oswald';
+	}
 	.bg-dark-custom {
 		background-color: #2b2b2b;
 	}
