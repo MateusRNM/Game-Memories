@@ -10,21 +10,15 @@ let accessToken: string | null = null;
 
 async function getAccessToken() {
   if (accessToken) return accessToken;
-
   const clientId = Deno.env.get("TWITCH_CLIENT_ID");
   const clientSecret = Deno.env.get("TWITCH_CLIENT_SECRET");
-
   const response = await fetch(
     `https://id.twitch.tv/oauth2/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`,
-    {
-      method: "POST",
-    },
+    { method: "POST" },
   );
-
   if (!response.ok) {
     throw new Error("Falha ao obter token de acesso da Twitch");
   }
-
   const data = await response.json();
   accessToken = data.access_token;
   return accessToken;
@@ -68,139 +62,150 @@ serve(async (req) => {
 
     const url = new URL(req.url);
     const searchQuery = url.searchParams.get("q");
-    if (!searchQuery) throw new Error('Parâmetro de busca "q" é obrigatório');
+    const gameId = url.searchParams.get("gameId");
+
+    if (!searchQuery && !gameId) {
+      throw new Error('Parâmetro "q" (search) ou "gameId" é obrigatório');
+    }
 
     const token = await getAccessToken();
     const clientId = Deno.env.get("TWITCH_CLIENT_ID")!;
 
-    const apiCalypseQuery = `
+    let finalResults: any[] = [];
+    let apiCalypseQuery;
+
+    if (gameId) {
+      apiCalypseQuery = `
         fields 
             name, summary, first_release_date, cover.url, platforms.name, 
+            involved_companies.company.name, involved_companies.developer, involved_companies.publisher,
+            category, parent_game, total_rating_count, alternative_names.name;
+        where id = ${gameId};
+        limit 1;
+      `;
+      finalResults = await callIgdb("games", apiCalypseQuery, token, clientId);
+    } else if (searchQuery) {
+      apiCalypseQuery = `
+        fields 
+            name, summary, first_release_date, cover.url, platforms.name, 
+            involved_companies.company.name, involved_companies.developer, involved_companies.publisher,
             category, parent_game, total_rating_count, alternative_names.name;
         where 
             (name ~ *"${searchQuery}"* | alternative_names.name ~ *"${searchQuery}"* | franchises.name ~ *"${searchQuery}"*) 
             & cover.url != null;
         limit 250;
-    `;
+      `;
+      const rawResults = await callIgdb("games", apiCalypseQuery, token, clientId);
 
-    const rawResults = await callIgdb(
-      "games",
-      apiCalypseQuery,
-      token,
-      clientId,
-    );
-
-    const uniqueGamesById = new Map();
-    rawResults.forEach((game: any) => {
-      if (game && game.id) uniqueGamesById.set(game.id, game);
-    });
-
-    const scoredAndFilteredGames = Array.from(uniqueGamesById.values())
-      .filter((game: any) =>
-        ![1, 2, 3, 5, 6, 7, 10, 13, 14].includes(game.category) &&
-        !["bundle", "edition", "goty"].some((termo) =>
-          game.name.toLowerCase().includes(termo)
-        )
-      )
-      .map((game: any) => {
-        let relevanceScore = 0;
-        const gameName = game.name.toLowerCase();
-        const query = searchQuery.toLowerCase();
-
-        if (gameName === query) relevanceScore += 100;
-        else if (gameName.startsWith(query)) relevanceScore += 50;
-        else if (gameName.includes(query)) relevanceScore += 10;
-
-        if (
-          game.alternative_names?.some((alt: any) =>
-            alt.name.toLowerCase().includes(query)
-          )
-        ) {
-          relevanceScore += 5;
-        }
-
-        if (!game.parent_game) {
-          relevanceScore += 20;
-        }
-
-        const popularityBonus = Math.log10(game.total_rating_count || 1) * 2;
-        relevanceScore += popularityBonus;
-
-        return { ...game, relevanceScore };
+      const uniqueGamesById = new Map();
+      rawResults.forEach((game: any) => {
+        if (game && game.id) uniqueGamesById.set(game.id, game);
       });
 
-    const groupedGames = new Map();
+      const scoredAndFilteredGames = Array.from(uniqueGamesById.values())
+        .filter((game: any) =>
+          ![1, 2, 3, 5, 6, 7, 10, 13, 14].includes(game.category) &&
+          !["bundle", "edition", "goty"].some((termo) =>
+            game.name.toLowerCase().includes(termo)
+          )
+        )
+        .map((game: any) => {
+          let relevanceScore = 0;
+          const gameName = game.name.toLowerCase();
+          const query = searchQuery.toLowerCase();
 
-    scoredAndFilteredGames.forEach((game) => {
-      const normalized = normalizeName(game.name);
-      const existingGame = groupedGames.get(normalized);
+          if (gameName === query) relevanceScore += 100;
+          else if (gameName.startsWith(query)) relevanceScore += 50;
+          else if (gameName.includes(query)) relevanceScore += 10;
 
-      if (!existingGame) {
-        groupedGames.set(normalized, game);
-      } else {
-        const existingPop = existingGame.total_rating_count || 0;
-        const currentPop = game.total_rating_count || 0;
+          if (game.alternative_names?.some((alt: any) => alt.name.toLowerCase().includes(query))) {
+            relevanceScore += 5;
+          }
 
-        if (currentPop > existingPop) {
+          if (!game.parent_game) {
+            relevanceScore += 20;
+          }
+
+          const popularityBonus = Math.log10(game.total_rating_count || 1) * 2;
+          relevanceScore += popularityBonus;
+          return { ...game, relevanceScore };
+        });
+
+      const groupedGames = new Map();
+      scoredAndFilteredGames.forEach((game) => {
+        const normalized = normalizeName(game.name);
+        const existingGame = groupedGames.get(normalized);
+
+        if (!existingGame || (game.total_rating_count || 0) > (existingGame.total_rating_count || 0)) {
           groupedGames.set(normalized, game);
         }
-      }
+      });
+
+      const bestCandidates = Array.from(groupedGames.values());
+      bestCandidates.sort((a, b) => b.relevanceScore - a.relevanceScore);
+      finalResults = bestCandidates.slice(0, 40);
+    }
+
+    const gamesToCache = finalResults.map((game: any) => {
+        let developer = 'Não informado';
+        let publisher = 'Não informado';
+        if (game.involved_companies) {
+            const devCompany = game.involved_companies.find((c: any) => c.developer === true);
+            const pubCompany = game.involved_companies.find((c: any) => c.publisher === true);
+            if (devCompany) developer = devCompany.company.name;
+            if (pubCompany) publisher = pubCompany.company.name;
+        }
+        return {
+            id: game.id,
+            name: game.name,
+            release_year: game.first_release_date ? new Date(game.first_release_date * 1000).getFullYear() : null,
+            cover_url: game.cover?.url ? `https:${game.cover.url.replace("t_thumb", "t_cover_big")}` : null,
+            platforms: game.platforms?.map((p: any) => p.name).join(", ") || null,
+            summary: game.summary || null,
+            developer,
+            publisher,
+            last_fetched_at: new Date().toISOString(),
+        };
     });
 
-    const bestCandidates = Array.from(groupedGames.values());
-    bestCandidates.sort((a, b) => b.relevanceScore - a.relevanceScore);
-    const finalResults = bestCandidates.slice(0, 40);
-
-    const gamesToCache = finalResults.map((game: any) => ({
-      id: game.id,
-      name: game.name,
-      release_year: game.first_release_date
-        ? new Date(game.first_release_date * 1000).getFullYear()
-        : null,
-      cover_url: game.cover?.url
-        ? `https:${game.cover.url.replace("t_thumb", "t_cover_big")}`
-        : null,
-      platforms: game.platforms?.map((p: any) => p.name).join(", ") || null,
-      summary: game.summary || null,
-      igdb_data: game,
-      last_fetched_at: new Date().toISOString(),
-    }));
-
     if (gamesToCache.length > 0) {
-      supabaseAdmin.from("games_cache").upsert(gamesToCache).then(
-        ({ error }) => {
-          if (error) {
-            console.error(
-              "Falha ao salvar resultados da busca no cache:",
-              error,
-            );
-          } else {console.log(
-              `${gamesToCache.length} jogos salvos/atualizados no cache.`,
-            );}
-        },
-      );
+      supabaseAdmin.from("games_cache").upsert(gamesToCache, { onConflict: 'id' }).then(({ error }) => {
+        if (error) console.error("Falha ao salvar no cache:", error);
+        else console.log(`${gamesToCache.length} jogos salvos/atualizados no cache.`);
+      });
     }
 
     const formattedGames = finalResults.map((game: any) => {
-      const coverUrl = game.cover?.url?.replace("t_thumb", "t_cover_big");
-      const platformNames = game.platforms?.map((p: any) => p.name).join(", ");
-      const releaseYear = game.first_release_date
-        ? new Date(game.first_release_date * 1000).getFullYear()
-        : "N/A";
-
-      return {
-        id: game.id,
-        name: game.name,
-        release_year: releaseYear,
-        cover_url: coverUrl ? `https:${coverUrl}` : null,
-        platforms: platformNames || "Não informado",
-        summary: game.summary || "Sem resumo disponível.",
-      };
+        let developer = 'Não informado';
+        let publisher = 'Não informado';
+        if (game.involved_companies) {
+            const devCompany = game.involved_companies.find((c: any) => c.developer === true);
+            const pubCompany = game.involved_companies.find((c: any) => c.publisher === true);
+            if (devCompany) developer = devCompany.company.name;
+            if (pubCompany) publisher = pubCompany.company.name;
+        }
+        const coverUrl = game.cover?.url?.replace("t_thumb", "t_cover_big");
+        return {
+            id: game.id,
+            name: game.name,
+            release_year: game.first_release_date ? new Date(game.first_release_date * 1000).getFullYear() : "N/A",
+            cover_url: coverUrl ? `https:${coverUrl}` : null,
+            platforms: game.platforms?.map((p: any) => p.name).join(", ") || "Não informado",
+            summary: game.summary || "Sem resumo disponível.",
+            developer,
+            publisher,
+        };
     });
 
-    return new Response(JSON.stringify(formattedGames), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    if (gameId && formattedGames.length > 0) {
+      return new Response(JSON.stringify(formattedGames[0]), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    } else {
+      return new Response(JSON.stringify(formattedGames), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
   } catch (err) {
     return new Response(String(err?.message ?? err), {
       status: 500,

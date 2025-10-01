@@ -16,6 +16,9 @@
     let startedAt: string = $state('');
     let finishedAt: string = $state('');
     let addedAt: string = $state('');
+    let playTimeHours: string = $state('0');
+    let rating: number = $state(5);
+    let personalNotes: string = $state('');
 
     let isLoading: boolean = $state(false);
 
@@ -40,6 +43,9 @@
             startedAt = formatDateForInput(data.libraryEntry.started_at);
             finishedAt = formatDateForInput(data.libraryEntry.finished_at);
             addedAt = new Date(data.libraryEntry.added_at).toLocaleDateString('pt-BR');
+            playTimeHours = String(data.libraryEntry.playtime_hours) || '0',
+            rating = data.libraryEntry.rating,
+            personalNotes = data.libraryEntry.personal_notes
         } else {
             libraryEntry = null;
         }
@@ -59,7 +65,10 @@
                 status: status,
                 platform_playing: platformPlaying,
                 started_at: startedAt ? new Date(startedAt).toISOString() : null,
-                finished_at: finishedAt ? new Date(finishedAt).toISOString() : null
+                finished_at: finishedAt ? new Date(finishedAt).toISOString() : null,
+                playtime_hours: parseInt(playTimeHours),
+                rating: rating,
+                personal_notes: personalNotes
             });
             libraryEntry = updatedEntry;
         } finally {
@@ -73,6 +82,7 @@
         platformPlaying = '';
         startedAt = formatDateForInput(new Date().toISOString());
         finishedAt = '';
+        rating = 5;
         handleUpsert();
     }
 
@@ -131,7 +141,10 @@
                                             </button>
                                         </div>
                                     {:else}
-                                        <form onsubmit={handleUpsert} class="catalog-form">
+                                        <form onsubmit={(event) => {
+                                                event.preventDefault();                                                
+                                                handleUpsert();
+                                            }} class="catalog-form">
                                             <div class="row g-3">
                                                 <div class="col-md-6">
                                                     <label for="status" class="form-label">Status</label>
@@ -155,6 +168,30 @@
                                                         <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" id="finished_at" type="date" class="form-control" bind:value={finishedAt} disabled={isLoading || !$isOnline || data.offline}>
                                                     </div>
                                                 {/if}
+                                                <div class="col-md-6">
+                                                    <label for="started_at" class="form-label">Horas de jogo</label>
+                                                    <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" id="started_at" type="numeric" class="form-control" bind:value={playTimeHours} disabled={isLoading || !$isOnline || data.offline}>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="status" class="form-label">Nota</label>
+                                                    <select id="status" class="form-select" bind:value={rating} disabled={isLoading || !$isOnline || data.offline}>
+                                                        <option value={0}>0</option>
+                                                        <option value={1}>1</option>
+                                                        <option value={2}>2</option>
+                                                        <option value={3}>3</option>
+                                                        <option value={4}>4</option>
+                                                        <option value={5}>5</option>
+                                                        <option value={6}>6</option>
+                                                        <option value={7}>7</option>
+                                                        <option value={8}>8</option>
+                                                        <option value={9}>9</option>
+                                                        <option value={10}>10</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="status" class="form-label">Anotações pessoais</label>
+                                                    <textarea class="form-control" bind:value={personalNotes}></textarea>
+                                                </div>
                                             </div>
                                             <div class="d-flex gap-2 mt-4">
                                                 <button type="submit" class="btn btn-primary flex-grow-1" disabled={isLoading || !$isOnline || data.offline}>
@@ -189,6 +226,14 @@
                                     <strong>Plataformas:</strong>
                                     <span>{game.platforms}</span>
                                 </div>
+                                <div class="metadata-item">
+                                    <strong>Desenvolvedora:</strong>
+                                    <span>{game.developer}</span>
+                                </div>
+                                <div class="metadata-item">
+                                    <strong>Publicadora:</strong>
+                                    <span>{game.publisher}</span>
+                                </div>
                             </div>
                         </section>
                     </div>
@@ -211,6 +256,10 @@
     @font-face {
         font-family: 'Oswald';
         src: url('../../../lib/assets/fonts/Oswald.ttf');
+    }
+    textarea {
+        text-align: justify;
+        padding: 0.2rem;
     }
     .page-background {
         font-family: 'Oswald', sans-serif;

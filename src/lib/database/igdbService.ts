@@ -23,11 +23,13 @@ export async function getGameDetailsById(gameId: number, supabase: SupabaseClien
             release_year: cachedGame.release_year,
             cover_url: cachedGame.cover_url,
             platforms: cachedGame.platforms,
-            summary: cachedGame.summary
+            summary: cachedGame.summary,
+            developer: cachedGame.developer,
+            publisher: cachedGame.publisher
         };
     }
 
-    const response = await fetch(`${import.meta.env.VITE_SEARCH_GAME_BY_ID_FUNCTION_URL}?q=${encodeURIComponent(gameId)}`);
+    const response = await fetch(`${import.meta.env.VITE_SEARCH_GAMES_FUNCTION_URL}?gameId=${encodeURIComponent(gameId)}`);
     if(!response.ok){
         throw new Error('Falha ao buscar os dados!');
     }
@@ -39,7 +41,8 @@ export async function getGameDetailsById(gameId: number, supabase: SupabaseClien
             cover_url: apiData.cover_url,
             platforms: apiData.platforms,
             summary: apiData.summary,
-            igdb_data: apiData,
+            developer: apiData.developer,
+            publisher: apiData.publisher,
             last_fetched_at: new Date().toISOString()
         });
     return apiData;

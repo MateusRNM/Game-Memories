@@ -19,7 +19,7 @@ async function fetchGameFromIGDB(gameId: number) {
   const accessToken = tokenData.access_token;
 
   const apiCalypseQuery = `
-          fields name, summary, first_release_date, cover.url, platforms.name;
+          fields name, summary, first_release_date, cover.url, platforms.name, involved_companies.company.name, involved_companies.developer, involved_companies.publisher;
           where id = ${gameId};
           limit 1;
       `;
@@ -64,6 +64,15 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
+    let developer = 'Não informado';
+    let publisher = 'Não informado';
+    if (gameData.involved_companies) {
+      const devCompany = gameData.involved_companies.find(c => c.developer === true);        
+      const pubCompany = gameData.involved_companies.find(c => c.publisher === true);
+      if (devCompany) developer = devCompany.company.name;
+      if (pubCompany) publisher = pubCompany.company.name;
+    }
+
     const gameToCache = {
       id: gameData.id,
       name: gameData.name,
@@ -75,6 +84,8 @@ serve(async (req) => {
         : null,
       platforms: gameData.platforms?.map((p: any) => p.name).join(", ") || null,
       summary: gameData.summary || null,
+      developer: developer,
+      publisher: publisher,
       last_fetched_at: new Date().toISOString(),
     };
 

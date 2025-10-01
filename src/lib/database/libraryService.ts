@@ -8,6 +8,9 @@ interface LibraryUpsertData {
     platform_playing?: string | null;
     started_at?: string | null;
     finished_at?: string | null;
+    playtime_hours?: number | null;
+    personal_notes?: string | null;
+    rating?: number | null;
 }
 
 export async function upsertGameInLibrary(supabase: SupabaseClient, data: LibraryUpsertData): Promise<GameCatalog> {

@@ -34,7 +34,9 @@ export const load: PageLoad = async ({ parent, url }) => {
             release_year: cachedEntry.games_cache.release_year,
             cover_url: cachedEntry.games_cache.cover_url,
             platforms: cachedEntry.games_cache.platforms,
-            summary: cachedEntry.games_cache.summary
+            summary: cachedEntry.games_cache.summary,
+            publisher: cachedEntry.games_cache.publisher,
+            developer: cachedEntry.games_cache.developer
         } : null;
 
         return {
