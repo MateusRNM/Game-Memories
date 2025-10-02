@@ -22,7 +22,7 @@ export const load: PageLoad = async ({ parent }): Promise<CatalogPageData> => {
                 games_cache (*)
             `)
             .eq('user_id', session.user.id)
-            .order('added_at', { ascending: false });
+            .order('list_position', { ascending: true });
 
         if (error) {
             throw error;

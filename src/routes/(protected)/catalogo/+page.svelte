@@ -1,6 +1,8 @@
 <script lang="ts">
     import GameCard from "$lib/components/GameCard.svelte";
 	import { isOnline } from "$lib/database/networkStores.js";
+    import { dndzone } from "svelte-dnd-action";
+    import { flip } from "svelte/animate";
 
     let { data } = $props();
 
@@ -22,6 +24,22 @@
         const matchesSearch = searchText === "" || game.name.toLowerCase().includes(searchText.toLowerCase());
         return matchesSearch;
     }));
+
+    function handleDndConsider(e) {
+        const { items } = e.detail;
+        library = items;
+    }
+
+    async function handleDndFinalize(e) {
+        const { items } = e.detail;
+        library = items;
+
+        const orderedIds = library.map(entry => entry.id);
+
+        await data.supabase.rpc('update_library_order', {
+            p_library_ids: orderedIds
+        });
+    }
 </script>
 
 <div class="container py-4">
@@ -55,10 +73,10 @@
         </div>
     </div>
 
-    <div class="row gy-4">
+    <div class="row gy-4" use:dndzone={{ items: library, flipDurationMs: 300, delayTouchStart: true, dropTargetStyle: { outline: 'none' }, transformDraggedElement: (e) => e.style.outline = 'none' }} onconsider={handleDndConsider} onfinalize={handleDndFinalize}>
         {#each filteredLibrary as entry (entry.id)}
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch">
-                <GameCard gameData={entry.games_cache} />
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch" animate:flip={{ duration: 300 }}>
+                <GameCard gameData={entry.games_cache}/>
             </div>
         {:else}
             <div class="col-12">

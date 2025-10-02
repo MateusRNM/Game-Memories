@@ -8,19 +8,21 @@ export const load: PageLoad = async ({ parent, url }) => {
     try {
         const game = await getGameDetailsById(gameId, supabase);
         let libraryEntry = null;
+        let listPosData = null;
         if (session?.user) {
             const { data } = await supabase
                 .from('user_library')
                 .select('*')
                 .eq('user_id', session.user.id)
-                .eq('game_id', gameId)
-                .limit(1);
-            libraryEntry = data[0] || null;
+                .order('list_position', { ascending: true });
+            libraryEntry = data?.find(value => value.game_id == gameId) || null;
+            listPosData = data[data?.length-1].list_position;
         }
         return {
             game,
             libraryEntry,
-            offline: false
+            offline: false,
+            lastListPosition: listPosData || 0
         };
 
     } catch (error: any) {

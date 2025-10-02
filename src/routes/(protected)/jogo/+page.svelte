@@ -2,13 +2,12 @@
     import { user } from '$lib/database/authStore';
     import { upsertGameInLibrary, removeGameFromLibrary } from '$lib/database/libraryService';
 	import { isOnline } from '$lib/database/networkStores.js';
-    import type { GameCatalog } from "$lib/interfaces";
     import type { SupabaseClient } from '@supabase/supabase-js';
 
     let { data } = $props();
     
     let game = $state(data.game);
-    let libraryEntry: GameCatalog | null = $state(data.libraryEntry);
+    let libraryEntry = $state(data.libraryEntry);
     const supabase: SupabaseClient = data.supabase;
 
     let status: number = $state(1);
@@ -68,7 +67,8 @@
                 finished_at: finishedAt ? new Date(finishedAt).toISOString() : null,
                 playtime_hours: parseInt(playTimeHours),
                 rating: rating,
-                personal_notes: personalNotes
+                personal_notes: personalNotes,
+                list_position: data.lastListPosition+1
             });
             libraryEntry = updatedEntry;
         } finally {

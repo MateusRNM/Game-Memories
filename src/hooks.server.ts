@@ -3,7 +3,7 @@ import { SUPABASE_URL, SUPABASE_KEY } from '$env/static/private';
 import type { Handle } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {
-    event.locals.supabase = createSupabaseServerClient({
+    event.locals.supabase = await createSupabaseServerClient({
         supabaseUrl: SUPABASE_URL,
         supabaseKey: SUPABASE_KEY,
         event,
@@ -12,7 +12,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     event.locals.getSession = async () => {
         const {
             data: { session },
-        } = await event.locals.supabase.auth.getSession();
+        } = await event.locals.supabase.auth.getUser();
         return session;
     };
 

@@ -1,4 +1,3 @@
-import type { GameCatalog } from '$lib/interfaces';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 interface LibraryUpsertData {
@@ -11,9 +10,10 @@ interface LibraryUpsertData {
     playtime_hours?: number | null;
     personal_notes?: string | null;
     rating?: number | null;
+    list_position: number;
 }
 
-export async function upsertGameInLibrary(supabase: SupabaseClient, data: LibraryUpsertData): Promise<GameCatalog> {
+export async function upsertGameInLibrary(supabase: SupabaseClient, data: LibraryUpsertData) {
     const { data: savedEntry, error } = await supabase
         .from('user_library')
         .upsert(data, { onConflict: 'user_id, game_id' })
@@ -21,10 +21,9 @@ export async function upsertGameInLibrary(supabase: SupabaseClient, data: Librar
         .single();
 
     if (error) {
-        console.error("Erro no upsert:", error);
         throw new Error(error.message);
     }
-    return savedEntry as GameCatalog;
+    return savedEntry;
 }
 
 export async function removeGameFromLibrary(supabase: SupabaseClient, libraryEntryId: string): Promise<void> {
@@ -34,7 +33,6 @@ export async function removeGameFromLibrary(supabase: SupabaseClient, libraryEnt
         .match({ id: libraryEntryId });
     
     if (error) {
-        console.error("Erro ao remover:", error);
         throw new Error(error.message);
     }
 }
