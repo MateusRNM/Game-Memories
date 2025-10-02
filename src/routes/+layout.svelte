@@ -1,11 +1,11 @@
 <script lang="ts">
-	import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 	import 'bootstrap/dist/css/bootstrap.min.css';
 	import 'bootstrap-icons/font/bootstrap-icons.css';
+	import * as bootstrap from "bootstrap";
 	import favicon from '$lib/assets/favicon.svg';
 	import { user } from '$lib/database/authStore';
 	import SideMenu from '$lib/components/SideMenu.svelte';
-	import { page } from '$app/state';
+	import { navigating, page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { initializeNetworkListener } from '$lib/database/networkStores.js';
@@ -18,8 +18,14 @@
 
 	const publicRoutes = ['/', '/esqueci-senha', '/update-password'];
 
+	let offCanvas = $state(null);
+
 	$effect((): void => {
 		$user = data.session?.user ?? null;
+
+		if(navigating.to !== null && offCanvas){
+			offCanvas.hide();
+		}
 	});
 
 	onMount(async (): Promise<never> => {
@@ -30,6 +36,8 @@
 				invalidateAll();
 			}
 		});
+
+		offCanvas = new bootstrap.Offcanvas('#sidebarOffcanvas');
 
 		const cleanupBrowserListeners = await initializeNetworkListener();
 
@@ -172,6 +180,14 @@
 		padding: 0px;
 		color: white;
 		font-family: 'Oswald', sans-serif;
+	}
+
+	.btn-close:focus {
+		box-shadow: none;
+	}
+
+	button.navbar-toggler {
+		box-shadow: none;
 	}
 
 	*::-webkit-scrollbar {
