@@ -64,7 +64,7 @@
         text-wrap: unset;
     }
 
-    @media(max-height: 730px){
+    @media(max-height: 900px){
         .game-card {
             width: 9rem;
             height: 9rem;

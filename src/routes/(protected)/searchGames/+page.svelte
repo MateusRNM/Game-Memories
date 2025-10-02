@@ -57,7 +57,7 @@
             </div>
         {:else if games.length != 0}
             {#each games as game}
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch">
+                <div class="col-6 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch">
                     <GameCard gameData={game}/>
                 </div>
             {/each}

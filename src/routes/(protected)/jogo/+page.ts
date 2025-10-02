@@ -14,9 +14,11 @@ export const load: PageLoad = async ({ parent, url }) => {
                 .from('user_library')
                 .select('*')
                 .eq('user_id', session.user.id)
-                .order('list_position', { ascending: true });
+                .order('list_position', { ascending: false });
             libraryEntry = data?.find(value => value.game_id == gameId) || null;
-            listPosData = data[data?.length-1].list_position;
+            if(listPosData?.length > 0){
+                listPosData = data[0].list_position;
+            }
         }
         return {
             game,
