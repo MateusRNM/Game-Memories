@@ -21,6 +21,16 @@
 	<ul class="nav nav-pills flex-column mb-auto">
 		<li class="nav-item">
 			<a
+				href="/inicio"
+				class="nav-link text-white"
+				class:active={page.url.pathname.startsWith('/inicio')}
+			>
+				<i class="bi bi-house"></i>
+				<span class="sidebar-text">Início</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a
 				href="/searchGames"
 				class="nav-link text-white"
 				class:active={page.url.pathname.startsWith('/searchGames')}
