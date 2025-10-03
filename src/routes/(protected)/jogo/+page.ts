@@ -16,7 +16,7 @@ export const load: PageLoad = async ({ parent, url }) => {
                 .eq('user_id', session.user.id)
                 .order('list_position', { ascending: false });
             libraryEntry = data?.find(value => value.game_id == gameId) || null;
-            if(listPosData?.length > 0){
+            if(data?.length > 0){
                 listPosData = data[0].list_position;
             }
         }

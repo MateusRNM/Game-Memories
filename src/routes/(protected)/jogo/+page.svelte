@@ -152,16 +152,19 @@
                                                         <option value={0}>Na Fila</option>
                                                         <option value={1}>Jogando</option>
                                                         <option value={2}>Zerado</option>
+                                                        <option value={3}>Desistiu</option>
                                                     </select>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="platform" class="form-label">Plataforma Jogando</label>
                                                     <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" id="platform" type="text" class="form-control" placeholder="Ex: PC, PS5..." bind:value={platformPlaying} disabled={isLoading || !$isOnline || data.offline}>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <label for="started_at" class="form-label">Começou a jogar em</label>
-                                                    <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" id="started_at" type="date" class="form-control" bind:value={startedAt} disabled={isLoading || !$isOnline || data.offline}>
-                                                </div>
+                                                {#if status !== 0}
+                                                    <div class="col-md-6">
+                                                        <label for="started_at" class="form-label">Começou a jogar em</label>
+                                                        <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" id="started_at" type="date" class="form-control" bind:value={startedAt} disabled={isLoading || !$isOnline || data.offline}>
+                                                    </div>
+                                                {/if}
                                                 {#if status === 2}
                                                     <div class="col-md-6">
                                                         <label for="finished_at" class="form-label">Zerado em</label>
