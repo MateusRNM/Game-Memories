@@ -1,8 +1,9 @@
 <script lang="ts">
     import GameCard from "$lib/components/GameCard.svelte";
 	import { isOnline } from "$lib/database/networkStores.js";
-    import { dndzone } from "svelte-dnd-action";
+    import { dndzone, overrideItemIdKeyNameBeforeInitialisingDndZones } from "svelte-dnd-action";
     import { flip } from "svelte/animate";
+    overrideItemIdKeyNameBeforeInitialisingDndZones("id");
 
     let { data } = $props();
 
@@ -13,32 +14,43 @@
     let jogosZerados = $derived(library.filter(entry => entry.status === 2).length);
     let jogando = $derived(library.filter(entry => entry.status === 1).length);
     let jogosNaFila = $derived(library.filter(entry => entry.status === 0).length);
+    let jogosDesistidos = $derived(library.filter(entry => entry.status === 3).length);
 
-    let filteredLibrary = $derived(library.filter(entry => {
-        const matchesStatus = show === -1 || entry.status === show;
-        if (!matchesStatus) return false;
+    let isDragging = $state(false);
 
-        const game = entry.games_cache;
-        if (!game) return false;
+    const flipDuration = 300;
 
-        const matchesSearch = searchText === "" || game.name.toLowerCase().includes(searchText.toLowerCase());
-        return matchesSearch;
-    }));
+    let filteredLibrary = $derived(
+		library.filter((entry) => {
+			const matchesStatus = show === -1 || entry.status === show;
+			if (!matchesStatus) return false;
+
+			const game = entry.games_cache;
+			if (!game) return false;
+
+			const matchesSearch =
+				searchText === '' || game.name.toLowerCase().includes(searchText.toLowerCase());
+			return matchesSearch;
+		})
+	);
 
     function handleDndConsider(e) {
-        const { items } = e.detail;
-        library = items;
+        isDragging = true;
+        filteredLibrary = e.detail.items;
     }
 
     async function handleDndFinalize(e) {
-        const { items } = e.detail;
-        library = items;
-
-        const orderedIds = library.map(entry => entry.id);
-
-        await data.supabase.rpc('update_library_order', {
-            p_library_ids: orderedIds
-        });
+		const reorderedFilteredItems = e.detail.items;
+		const reorderedIds = reorderedFilteredItems.map((item) => item?.id);
+		const reorderedIdsSet = new Set(reorderedIds);
+		const itemsNotInFilter = library.filter((item) => !reorderedIdsSet.has(item?.id));
+		const newFullLibrary = [...reorderedFilteredItems, ...itemsNotInFilter];
+		library = newFullLibrary;
+		const finalOrderedIds = newFullLibrary.map((entry) => entry?.id);
+        isDragging = false;
+		await data.supabase.rpc('update_library_order', {
+			p_library_ids: finalOrderedIds
+		});
     }
 </script>
 
@@ -63,20 +75,26 @@
                     <option value={0}>Na fila</option>
                     <option value={1}>Jogando</option>
                     <option value={2}>Zerados</option>
+                    <option value={3}>Desistidos</option>
                 </select>
             </div>
         </div>
-        <div class="d-flex justify-content-center align-items-center gap-2 p-4 text-center">
-            <span class="badge text-bg-primary">Jogos zerados: {jogosZerados}</span>
-            <span class="badge text-bg-light">Jogando: {jogando}</span>
-            <span class="badge text-bg-secondary">Na fila: {jogosNaFila}</span>
+        <div class="row justify-content-center align-items-center gap-2 p-4 text-center">
+            <div class="col-6"><span class="badge text-bg-primary">Jogos zerados: {jogosZerados}</span></div>
+            <div class="col-6"><span class="badge text-bg-light">Jogando: {jogando}</span></div>
+            <div class="col-6"><span class="badge text-bg-secondary">Na fila: {jogosNaFila}</span></div>
+            <div class="col-6"><span class="badge text-bg-danger">Desistidos: {jogosDesistidos}</span></div>
         </div>
     </div>
 
-    <div class="row gy-4" use:dndzone={{ items: library, flipDurationMs: 300, delayTouchStart: true, dropTargetStyle: { outline: 'none' }, transformDraggedElement: (e) => e.style.outline = 'none' }} onconsider={handleDndConsider} onfinalize={handleDndFinalize}>
+    <div class="row gy-4" 
+        use:dndzone={{ items: filteredLibrary, flipDurationMs: flipDuration, delayTouchStart: true, dropTargetStyle: { outline: 'none' }, transformDraggedElement: (e) => e.style.outline = 'none' }} 
+        onconsider={handleDndConsider} 
+        onfinalize={handleDndFinalize}
+        class:is-dragging={isDragging}>
         {#each filteredLibrary as entry (entry.id)}
-            <div class="col-6 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch" animate:flip={{ duration: 300 }}>
-                <GameCard gameData={entry.games_cache}/>
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch" animate:flip={{ duration: isDragging ? 0 : flipDuration }}>
+                <GameCard isDragging={isDragging} gameData={entry.games_cache}/>
             </div>
         {:else}
             <div class="col-12">
@@ -135,6 +153,14 @@
         height: 2rem;
         padding: 0.5rem;
         font-size: 0.9rem;
+    }
+    .is-dragging :global(a.game-card:hover) {
+        transform: none;
+        transition: none;
+    }
+    :global(.is-dragging .dnd-shadow) {
+        opacity: 0.8;
+        transform: scale(1.05);
     }
 </style>
 

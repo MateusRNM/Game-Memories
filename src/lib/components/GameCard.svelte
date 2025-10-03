@@ -1,9 +1,9 @@
 <script lang="ts">
     import { fade } from 'svelte/transition';
-    const { gameData } = $props();
+    const { gameData, isDragging } = $props();
 </script>
 
-<a href={`/jogo?gameId=${gameData.id}`} class="game-card" transition:fade={{ duration: 200 }}>
+<a href={`/jogo?gameId=${gameData.id}`} class="game-card" transition:fade={{ duration: isDragging ? 0 : 300 }}>
     <div class="card-image-container">
         <img class="card-image" src={gameData.cover_url} alt="Capa de {gameData.name}" loading="lazy">
         <div class="image-overlay">
