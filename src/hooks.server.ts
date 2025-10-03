@@ -3,7 +3,7 @@ import { SUPABASE_URL, SUPABASE_KEY } from '$env/static/private';
 import type { Handle } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {
-    event.locals.supabase = await createSupabaseServerClient({
+    event.locals.supabase = createSupabaseServerClient({
         supabaseUrl: SUPABASE_URL,
         supabaseKey: SUPABASE_KEY,
         event,
@@ -15,6 +15,8 @@ export const handle: Handle = async ({ event, resolve }) => {
         } = await event.locals.supabase.auth.getUser();
         return session;
     };
+
+    await event.locals.getSession();
 
     return resolve(event, {
         filterSerializedResponseHeaders(name) {
