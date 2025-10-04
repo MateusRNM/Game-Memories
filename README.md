@@ -1,12 +1,12 @@
-<center><h1>Game Memories</h1></center>
-<center><h3>Apresentação básica</h3></center>
+<h1 align="center">Game Memories</h1>
+<h3 align="center">Apresentação básica</h3>
 <p style="text-align:justify;">Este projeto se trata de um aplicativo feito para gamers que desejam catalogar jogos que estão jogando ou que já zeraram, permitindo que você visualize seu catálogo de jogos. Este projeto é 100% gratuito para utilizar e também open-source. Também aceito contribuições, sou estudante e é uma das minhas primeiras experiências desenvolvendo um projeto "completo" como esse.
 <br><br>Plataformas disponíveis: Desktop e Android.</p>
 <br>
 <b><p style="text-align:justify;">Um agradecimento especial ao meu amigo e professor Ápio Carnielo e Silva por ter idealizado esse projeto.</p></b>
 <hr>
 <div>
-    <center><h3>Funcionalidades:</h3></center>
+    <h3 align="center">Funcionalidades:</h3>
     <ul>
         <li>Sistema de autenticação;</li>
         <li>Pesquisar e adicionar jogos no seu catálogo pessoal;</li>
@@ -19,16 +19,15 @@
 </div>
 <hr>
 <div>
-    <center><h3>Funcionalidades que já pretendo adicionar:</h3></center>
+    <h3 align="center">Funcionalidades que já pretendo adicionar:</h3>
     <ul>
         <li>Sistema de exportar/importar catálogos;</li>
     </ul>
 </div>
 <hr>
 <div>
-    <center>
         <h3>Tecnologias utilizadas:</h3>
-        <p style="text-align:center;">
+        <p align="center">
             <a href="https://svelte.dev" target="_blank" rel="noreferrer">
                 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/svelte/svelte-original.svg" alt="svelte" width="80" height="80" />
             </a>
@@ -43,6 +42,4 @@
             </a>
         </p>
         <p style="text-align:justify;">Este projeto foi desenvolvido utilizando o Svelte para o front-end em conjunto com o supabase para o back-end. Para distribuição, optei por utilizar o CapacitorJS e Tauri para empacotar o app para Android e Desktop, respectivamente. Ou seja, esse app é híbirido (construído com tecnologias web). Além disso, a API IGDB foi utilizada para realizar a busca de dados sobre os jogos.</p>
-    </center>
-    
 </div>
