@@ -41,11 +41,9 @@
 
 		const cleanupBrowserListeners = await initializeNetworkListener();
 
-		/*
         window.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
-        */
 
 		window.addEventListener('keydown', (e) => {
 			if (
@@ -127,7 +125,7 @@
 {#if !publicRoutes.includes(page.url.pathname)}
 	<nav class="navbar navbar-dark bg-custom-dark d-lg-none fixed-top">
 		<div class="container-fluid">
-			<a class="navbar-brand" href="/">Gaming <span style="color:#0B428B;">Memories</span></a>
+			<a class="navbar-brand" href="/">Game <span style="color:#0B428B;">Memories</span></a>
 			<button
 				class="navbar-toggler"
 				type="button"

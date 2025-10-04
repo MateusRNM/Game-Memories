@@ -193,7 +193,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="status" class="form-label">Anotações pessoais</label>
-                                                    <textarea class="form-control" bind:value={personalNotes}></textarea>
+                                                    <textarea class="form-control" bind:value={personalNotes} readonly={isLoading || !$isOnline || data.offline}></textarea>
                                                 </div>
                                             </div>
                                             <div class="d-flex gap-2 mt-4">
@@ -225,11 +225,11 @@
                         <section class="card bg-dark-custom">
                              <div class="card-body">
                                 <h2 class="card-title">Detalhes</h2>
-                                <div class="metadata-item">
+                                <div class="metadata-item mb-3">
                                     <strong>Plataformas:</strong>
                                     <span>{game.platforms}</span>
                                 </div>
-                                <div class="metadata-item">
+                                <div class="metadata-item mb-3">
                                     <strong>Desenvolvedora:</strong>
                                     <span>{game.developer}</span>
                                 </div>
