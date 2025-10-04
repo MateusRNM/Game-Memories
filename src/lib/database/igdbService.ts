@@ -9,6 +9,15 @@ export async function searchGames(query: string) {
     return data;
 }
 
+export async function searchFutureGames() {
+    const response = await fetch(`${import.meta.env.VITE_SEARCH_FUTURE_GAMES_FUNCTION_URL}`);
+    if(!response.ok){
+        throw new Error('Falha ao buscar os dados!');
+    }
+    const data = await response.json();
+    return data;
+}
+
 export async function getGameDetailsById(gameId: number, supabase: SupabaseClient) {
     let { data: cachedGame, error: cacheError } = await supabase.from('games_cache').select('*').eq('id', gameId).limit(1);
     if (cacheError && cacheError.code !== 'PGRST116') { 
