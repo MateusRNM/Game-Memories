@@ -75,12 +75,12 @@
 
 <style>
     @font-face {
-		font-family: 'Oswald';
-		src: url('../../../lib/assets/fonts/Oswald.ttf');
+		font-family: 'mainFont';
+		src: url('../../../lib/assets/fonts/mainFont.ttf');
 	}
     * {
         color: white;
-        font-family: 'Oswald';
+        font-family: 'mainFont';
     }
     input {
         outline: none;
@@ -91,18 +91,25 @@
         font-size: 1.2rem;
     }
     #searchInput {
-        border: 0.25rem solid black;
-        border-radius: 6px;
+        background-color: #2c2c2c; 
+        border: 1px solid #4a4a4a;
+        border-radius: 8px;
         height: 2rem;
-        color: black;
-        width: 90%;
-        margin-top: 1rem;
-        font-size: 1.1rem;
-        padding: 0.2rem;
+        color: white;
+        width: 95%;
+        font-size: 1rem;
+        padding: 0.5rem;
+        transition: all 0.3s ease;
+        margin-bottom: 0.7rem;
     }
     #searchIcon {
         font-size: 1.5rem;
         pointer-events: none;
+    }
+    #searchInput:hover {
+        border-color: #0B428B;
+        box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem #0056b3;
+        transform: translateY(-4px);
     }
     #searchInput:focus {
         border-color: #0B428B;

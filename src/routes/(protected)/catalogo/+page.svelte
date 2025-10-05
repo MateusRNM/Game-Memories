@@ -80,10 +80,10 @@
             </div>
         </div>
         <div class="row justify-content-center align-items-center gap-2 p-4 text-center">
-            <div class="col-6"><span class="badge text-bg-primary">Jogos zerados: {jogosZerados}</span></div>
-            <div class="col-6"><span class="badge text-bg-light">Jogando: {jogando}</span></div>
-            <div class="col-6"><span class="badge text-bg-secondary">Na fila: {jogosNaFila}</span></div>
-            <div class="col-6"><span class="badge text-bg-danger">Desistidos: {jogosDesistidos}</span></div>
+            <span class="badge text-bg-primary">Jogos zerados: {jogosZerados}</span>
+            <span class="badge text-bg-light">Jogando: {jogando}</span>
+            <span class="badge text-bg-secondary">Na fila: {jogosNaFila}</span>
+            <span class="badge text-bg-danger">Desistidos: {jogosDesistidos}</span>
         </div>
     </div>
 
@@ -93,7 +93,7 @@
         onfinalize={handleDndFinalize}
         class:is-dragging={isDragging}>
         {#each filteredLibrary as entry (entry.id)}
-            <div class="col-6 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch" animate:flip={{ duration: isDragging ? 0 : flipDuration }}>
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 d-flex align-items-center" animate:flip={{ duration: isDragging ? 0 : flipDuration }}>
                 <GameCard isDragging={isDragging} gameData={entry.games_cache}/>
             </div>
         {:else}
@@ -108,12 +108,12 @@
 
 <style>
     @font-face {
-        font-family: 'Oswald';
-        src: url('../../../lib/assets/fonts/Oswald.ttf');
+        font-family: 'mainFont';
+        src: url('../../../lib/assets/fonts/mainFont.ttf');
     }
     * {
         color: white;
-        font-family: 'Oswald';
+        font-family: 'mainFont';
     }
     input {
         outline: none;
@@ -131,18 +131,25 @@
         box-shadow: 0 0 0 0.25rem #0b428b6b;
     }
     #searchInput {
-        border: 0.25rem solid black;
-        border-radius: 6px;
+        background-color: #2c2c2c; 
+        border: 1px solid #4a4a4a;
+        border-radius: 8px;
         height: 2rem;
-        color: black;
-        width: 90%;
-        margin-top: 1rem;
-        font-size: 1.1rem;
-        padding: 0.2rem;
+        color: white;
+        width: 95%;
+        font-size: 1rem;
+        padding: 0.5rem;
+        transition: all 0.3s ease;
+        margin-bottom: 0.7rem;
     }
     #searchIcon {
         font-size: 1.5rem;
         pointer-events: none;
+    }
+    #searchInput:hover {
+        border-color: #0B428B;
+        box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem #0056b3;
+        transform: translateY(-4px);
     }
     #searchInput:focus {
         border-color: #0B428B;

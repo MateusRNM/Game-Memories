@@ -1,8 +1,11 @@
 <script lang="ts">
+    import ConfirmToast from '$lib/components/ConfirmToast.svelte';
     import { user } from '$lib/database/authStore';
     import { upsertGameInLibrary, removeGameFromLibrary } from '$lib/database/libraryService';
 	import { isOnline } from '$lib/database/networkStores.js';
     import type { SupabaseClient } from '@supabase/supabase-js';
+	import { onMount } from 'svelte';
+    import * as bootstrap from "bootstrap";
 
     let { data } = $props();
     
@@ -18,8 +21,11 @@
     let playTimeHours: string = $state('0');
     let rating: number = $state(5);
     let personalNotes: string = $state('');
+    let personalNotesElement: HTMLTextAreaElement | null = $state(null);
 
     let isLoading: boolean = $state(false);
+
+    let confirmToast;
 
     function formatDateForInput(dateString: string | null | undefined): string {
         if (!dateString) return '';
@@ -87,8 +93,11 @@
     }
 
     async function handleRemove() {
+        confirmToast.show();
+    }
+
+    async function remove() {
         if (!libraryEntry?.id) return;
-        if (!confirm('Tem certeza que deseja remover este jogo do seu catálogo?')) return;
         isLoading = true;
 
         try {
@@ -98,7 +107,29 @@
             isLoading = false;
         }
     }
+
+    function resizeTextArea(textareaElement){
+        textareaElement.style.height = 'auto';
+		textareaElement.style.height = `${textareaElement.scrollHeight+20}px`;
+    }
+
+    $effect(() => {
+        if(personalNotesElement){
+            const callFunc = () => resizeTextArea(personalNotesElement);
+            personalNotesElement.addEventListener('input', callFunc);
+            resizeTextArea(personalNotesElement);
+            return () => {
+                personalNotesElement.removeEventListener('input', callFunc);
+            };
+        }
+    });
+
+    onMount(() => {
+        confirmToast = new bootstrap.Toast('#confirmToast');
+    });
 </script>
+
+<ConfirmToast msg={"Você tem certeza que deseja remover este jogo do seu catálogo? (Todos os dados do jogo serão perdidos)"} action={remove}/>
 
 <div class="page-background">
     {#if !$isOnline || data.offline}
@@ -193,10 +224,10 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="status" class="form-label">Anotações pessoais</label>
-                                                    <textarea class="form-control" bind:value={personalNotes} readonly={isLoading || !$isOnline || data.offline}></textarea>
+                                                    <textarea bind:this={personalNotesElement} id="personalNotes" class="form-control" bind:value={personalNotes} readonly={isLoading || !$isOnline || data.offline}></textarea>
                                                 </div>
                                             </div>
-                                            <div class="d-flex gap-2 mt-4">
+                                            <div class="d-flex gap-4 mt-4">
                                                 <button type="submit" class="btn btn-primary flex-grow-1" disabled={isLoading || !$isOnline || data.offline}>
                                                     {isLoading ? 'Salvando...' : 'Salvar Alterações'}
                                                 </button>
@@ -257,15 +288,11 @@
 
 <style>
     @font-face {
-        font-family: 'Oswald';
-        src: url('../../../lib/assets/fonts/Oswald.ttf');
-    }
-    textarea {
-        text-align: justify;
-        padding: 0.2rem;
+        font-family: 'mainFont';
+        src: url('../../../lib/assets/fonts/mainFont.ttf');
     }
     .page-background {
-        font-family: 'Oswald', sans-serif;
+        font-family: 'mainFont', sans-serif;
         background: black;
         min-height: 100vh;
     }
@@ -308,7 +335,7 @@
     }
     .game-title {
         text-shadow: 0 3px 8px rgba(0, 0, 0, 0.9);
-        font-size: clamp(2rem, 6vw, 3.5rem);
+        font-size: clamp(1.5rem, 6vw, 3.5rem);
     }
     .release-year {
         color: rgba(255, 255, 255, 0.7);
@@ -327,6 +354,7 @@
     .card-text {
         color: rgba(255, 255, 255, 0.8);
         line-height: 1.7;
+        text-align: justify;
     }
     .metadata-item {
         display: flex;
@@ -342,46 +370,83 @@
     .metadata-item span {
         color: white;
         font-size: 1.1rem;
+        text-align: justify;
     }
     .form-label {
         color: rgba(255, 255, 255, 0.7);
         font-size: 0.9rem;
+        text-align: center;
     }
     .form-control, .form-select {
-        background-color: #3f3f3f;
         color: white;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        font-family: 'Oswald', sans-serif;
+		background-color: #2c2c2c; 
+        border: 1px solid #4a4a4a;
+        border-radius: 8px;
+        height: 3rem;
+        width: 100%;
+        font-size: 1rem;
+        padding: 0.5rem;
+        transition: all 0.3s ease;
+        margin-bottom: 0.7rem;
+        text-align: center;
     }
+    .form-control:hover, .form-select:focus {
+		color: white;
+		background-color: #2c2c2c;
+		border-color: #0B428B;
+        box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem #0056b3;
+        transform: translateY(-4px);
+	}
     .form-control:focus, .form-select:focus {
-        background-color: #3f3f3f;
         color: white;
-        border-color: #0B428B;
-        box-shadow: 0 0 0 0.25rem #0b428b6b;
+		background-color: #2c2c2c;
+		border-color: #0B428B;
+        box-shadow: 0.3rem 0.3rem 0.3rem 0.3rem #0b428b6b;
     }
     .form-control::placeholder {
         color: rgba(255, 255, 255, 0.4);
     }
     .btn-primary {
-        background-color: #0B428B;
-        border-color: #0B428B;
+        width: 70%;
+        padding: 0.8rem;
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
         font-weight: bold;
-        transition: all 0.2s ease;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
     }
     .btn-primary:hover {
-        background-color: #0d52ac;
-        border-color: #0d52ac;
+        background-color: #0056b3;
+        border-color: #0B428B;
+        box-shadow: 0.3rem 0.3rem 0.3rem 0.3rem #0b428b6b;
         transform: translateY(-2px);
-        box-shadow: 0 4px 15px #0b428b80;
     }
     .btn-danger {
-        background-color: #8b2323;
-        border-color: #8b2323;
-        transition: all 0.2s ease;
+        width: 50%;
+        padding: 0.8rem;
+        background-color: #b90707;
+        color: #ffffff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
     }
     .btn-danger:hover {
-        background-color: #a32a2a;
-        border-color: #a32a2a;
+        background-color: #910606;
+        border-color: #790303;
+        box-shadow: 0.3rem 0.3rem 0.3rem 0.3rem #630202;
+        transform: translateY(-2px);
     }
     button:disabled {
         opacity: 0.6;
@@ -400,6 +465,13 @@
         place-content: center;
         min-height: 80vh;
         color: white;
+    }
+    #personalNotes {
+        text-align: justify !important;
+        padding: 0.9rem;
+        height: auto;
+        resize: none !important;
+        min-height: 16rem;
     }
     @media (max-width: 991.98px) {
         .card.bg-dark-custom {

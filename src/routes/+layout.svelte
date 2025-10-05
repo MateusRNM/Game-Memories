@@ -1,5 +1,5 @@
 <script lang="ts">
-	import 'bootstrap/dist/css/bootstrap.min.css';
+	import 'bootstrap/dist/css/bootstrap.css';
 	import 'bootstrap-icons/font/bootstrap-icons.css';
 	import * as bootstrap from "bootstrap";
 	import favicon from '$lib/assets/favicon.svg';
@@ -41,9 +41,11 @@
 
 		const cleanupBrowserListeners = await initializeNetworkListener();
 
+		
         window.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
+		
 
 		window.addEventListener('keydown', (e) => {
 			if (
@@ -173,11 +175,10 @@
 
 <style>
 	:global(body) {
-		background-color: #2b2b2b;
 		margin: 0px;
 		padding: 0px;
 		color: white;
-		font-family: 'Oswald', sans-serif;
+		font-family: 'mainFont', sans-serif;
 	}
 
 	.btn-close:focus {
@@ -188,11 +189,11 @@
 		box-shadow: none;
 	}
 
-	*::-webkit-scrollbar {
+	:global(*::-webkit-scrollbar) {
 		display: none;
 	}
 
-	*:-webkit-autofill {
+	:global(*:-webkit-autofill) {
 		box-shadow: 0 0 0px 1000px white inset !important;
 		-webkit-text-fill-color: black !important;
 	}
@@ -249,7 +250,11 @@
 
 	.main-content {
 		height: 100vh;
-		background-color: black;
+		background: #5c5c5c;
+		background: radial-gradient(circle at top, #1c1c1c, #000000);
+		background-size: cover;	
+  		background-position: center;
+		transition: all 0.3s ease;
 	}
 
 	@media (max-width: 991.98px) {

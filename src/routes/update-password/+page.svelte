@@ -75,7 +75,7 @@
 						</div>
 
 						<div class="d-grid">
-							<button type="submit" class="btn btn-primary btn-lg" disabled={isLoading}>
+							<button type="submit" class="submitButton" disabled={isLoading}>
 								{isLoading ? 'Salvando...' : 'Salvar Nova Senha'}
 							</button>
 						</div>
@@ -95,29 +95,60 @@
 
 <style>
 	@font-face {
-		font-family: 'Oswald';
-		src: url('../../lib/assets/fonts/Oswald.ttf');
+		font-family: 'mainFont';
+		src: url('../../lib/assets/fonts/mainFont.ttf');
 	}
 	* {
 		color: white;
-		font-family: 'Oswald';
+		font-family: 'mainFont';
 	}
 	.bg-dark-custom {
 		background-color: #2b2b2b;
 	}
 	.form-control {
-		background-color: #3f3f3f;
 		color: white;
-		border-color: rgba(255, 255, 255, 0.2);
+		background-color: #2c2c2c; 
+        border: 1px solid #4a4a4a;
+        border-radius: 8px;
+        height: 2rem;
+        width: 100%;
+        font-size: 1rem;
+        padding: 0.5rem;
+        transition: all 0.3s ease;
+        margin-bottom: 0.7rem;
+	}
+	.form-control:hover {
+		color: white;
+		background-color: #2c2c2c;
+		border-color: #0B428B;
+        box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem #0056b3;
+        transform: translateY(-4px);
 	}
 	.form-control:focus {
-		background-color: #3f3f3f;
 		color: white;
-		border-color: #0b428b;
-		box-shadow: 0 0 0 0.25rem #0b428b6b;
+		background-color: #2c2c2c;
+		border-color: #0B428B;
+        box-shadow: 0.3rem 0.3rem 0.3rem 0.3rem #0b428b6b;
 	}
-	.btn-primary {
-		background-color: #0b428b;
-		border-color: #0b428b;
-	}
+	.submitButton {
+        width: 100%;
+        padding: 0.8rem;
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+	.submitButton:hover {
+        background-color: #0056b3;
+        border-color: #0B428B;
+        box-shadow: 0.3rem 0.3rem 0.3rem 0.3rem #0b428b6b;
+        transform: translateY(-2px);
+    }
 </style>
