@@ -179,6 +179,7 @@
 		padding: 0px;
 		color: white;
 		font-family: 'mainFont', sans-serif;
+		background-color: black;
 	}
 
 	.btn-close:focus {

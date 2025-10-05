@@ -167,7 +167,7 @@
         border-radius: 8px;
         height: 2rem;
         color: white;
-        width: 95%;
+        width: 90%;
         font-size: 1rem;
         padding: 0.5rem;
         transition: all 0.3s ease;
