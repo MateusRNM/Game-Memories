@@ -67,7 +67,7 @@
     }
 </script>
 
-<div class="container text-center">
+<div class="container text-center page-container">
     <div id="topLogo" class="row">
         <div id="logo">
             <img src={logo} alt="">
@@ -76,8 +76,8 @@
     </div>
 
     <div id="buttonsContainer" class="row">
-        <button class="tabBtn" style={`color: ${pageState == 0 ? "#0B428B" : "white"}; border-color: ${pageState == 0 ? "#0B428B" : "white"};`} onclick={() => pageState = 0}>Logar</button>
-        <button class="tabBtn" style={`color: ${pageState == 1 ? "#0B428B" : "white"}; border-color: ${pageState == 1 ? "#0B428B" : "white"};`} onclick={() => pageState = 1}>Cadastrar</button>
+        <button class="tabBtn" style={`color: ${pageState == 0 ? "#0B428B" : "#888888"}; border-color: ${pageState == 0 ? "#0B428B" : "#888888"};`} onclick={() => pageState = 0}>Logar</button>
+        <button class="tabBtn" style={`color: ${pageState == 1 ? "#0B428B" : "#888888"}; border-color: ${pageState == 1 ? "#0B428B" : "#888888"};`} onclick={() => pageState = 1}>Cadastrar</button>
     </div>
 
     <div class="col" id="content">
@@ -90,7 +90,7 @@
             <div class="col">
                 <p>Senha:</p>
                 <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="password" class="userInputs" bind:value={password}><br>
-                <a href="/esqueci-senha">Esqueceu sua senha?</a>
+                <a href="/esqueci-senha" class="password-forgot">Esqueceu sua senha?</a>
             </div>
 
             {#if errorMsg !== ""}<p style="color:red; font-size: 1.25rem;">{errorMsg}</p>{/if}
@@ -122,15 +122,15 @@
 <style>
     * {
         color: white;
-        font-family: 'Oswald';
+        font-family: 'mainFont';
     }
     @font-face {
 		font-family: 'Adumu';
 		src: url('../lib/assets/fonts/Adumu.ttf');
 	}
     @font-face {
-		font-family: 'Oswald';
-		src: url('../lib/assets/fonts/Oswald.ttf');
+		font-family: 'mainFont';
+		src: url('../lib/assets/fonts/mainFont.ttf');
 	}
 
     h3 {
@@ -148,13 +148,16 @@
         color: #0B428B;
     }
     .userInputs {
-        border: 0.25rem solid black;
-        border-radius: 6px;
+        background-color: #2c2c2c; 
+        border: 1px solid #4a4a4a;
+        border-radius: 8px;
         height: 2rem;
-        color: black;
+        color: white;
         width: 20rem;
-        font-size: 1.1rem;
-        padding: 0.2rem;
+        font-size: 1rem;
+        padding: 0.5rem;
+        transition: all 0.3s ease;
+        margin-bottom: 0.7rem;
     }
     #content {
         flex-grow: 4;
@@ -170,19 +173,26 @@
     .tabBtn {
         background: none;
         border: none;
-        border-bottom: 0.25rem solid white;
+        border-bottom: 0.25rem solid #888888;
         width:8rem;
         font-size: 1.25rem;
         text-align: center;
+        transition: all 0.3s ease;
     }
     .submitButton {
+        width: 100%;
+        padding: 0.8rem;
+        background-color: #007bff;
+        color: #ffffff;
         border: none;
-        width: 6rem;
-        height: 3rem;
-        border-radius: 10px;
-        background-color: #0B428B;
+        border-radius: 8px;
         font-size: 1rem;
-        margin-top: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
     }
     #topLogo {
         position: relative;
@@ -196,16 +206,53 @@
         height: 3rem;
     }
     img {
-        object-fit: cover;
+        object-fit: contain;
         width: 100%;
         height: 100%;
+    }
+    .userInputs:hover {
+        border-color: #0B428B;
+        box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem #0056b3;
+        transform: translateY(-4px);
     }
     .userInputs:focus {
         border-color: #0B428B;
         box-shadow: 0.3rem 0.3rem 0.3rem 0.3rem #0b428b6b;
     }   
     .submitButton:hover {
+        background-color: #0056b3;
         border-color: #0B428B;
         box-shadow: 0.3rem 0.3rem 0.3rem 0.3rem #0b428b6b;
+        transform: translateY(-2px);
+    }
+    .page-container {
+        background-color: #1a1a1a;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        border-radius: 1rem; 
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5); 
+        width: 96%;
+        max-width: 25rem;
+        border: 1px solid #2c2c2c;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .page-container:hover {
+        box-shadow: 0.3rem 0.3rem 0.3rem 0.3rem #0b428b6b;
+        transform: translate(-50%, -52%);
+    }
+    .password-forgot {
+        color: #aaaaaa;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+    }
+    .password-forgot:hover {
+        color: #007bff; 
+        text-decoration: underline;
     }
 </style>

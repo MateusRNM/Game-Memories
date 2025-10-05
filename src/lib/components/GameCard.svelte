@@ -14,7 +14,7 @@
 
 <style>
     .game-card {
-        font-family: 'Oswald', sans-serif;
+        font-family: 'mainFont';
         background-color: #2B2B2B; 
         border-radius: 12px; 
         overflow: hidden;
@@ -25,6 +25,7 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
         border: 1px solid rgba(255, 255, 255, 0.1);
         transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        margin-top: 1rem;
         width: 30rem;
         height: 28rem;
     }

@@ -32,11 +32,11 @@
 
 <style>
 	@font-face {
-		font-family: 'Oswald';
-		src: url('../../../lib/assets/fonts/Oswald.ttf');
+		font-family: 'mainFont';
+		src: url('../../../lib/assets/fonts/mainFont.ttf');
 	}
 	* {
 		color: white;
-		font-family: 'Oswald';
+		font-family: 'mainFont';
 	}
 </style>
