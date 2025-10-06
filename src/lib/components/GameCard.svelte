@@ -27,7 +27,7 @@
         transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         margin-top: 1rem;
         width: 30rem;
-        height: 28rem;
+        height: max-content;
     }
 
     .game-card:hover {
@@ -51,18 +51,16 @@
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 50%;
+        height: 100%;
         background: linear-gradient(to top, #2B2B2B 10%, transparent);
     }
     
     .game-title {
-        font-size: 1.4rem;
-        line-height: 1.2;
-        min-height: 3.4rem; 
+        font-size: 1.2rem;
         position: relative;
-        top: 9rem;
+        top: 20rem;
         text-align: center;
-        text-wrap: unset;
+        text-wrap: wrap;
     }
 
     @media(max-height: 900px){

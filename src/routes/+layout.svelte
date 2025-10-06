@@ -26,26 +26,28 @@
 		if(navigating.to !== null && offCanvas){
 			offCanvas.hide();
 		}
+
+		if(!offCanvas && !publicRoutes.includes(page.url.pathname)){
+			offCanvas = new bootstrap.Offcanvas('#sidebarOffcanvas');
+		}
 	});
 
 	onMount(async (): Promise<never> => {
 		const {
 			data: { subscription }
 		} = data.supabase.auth.onAuthStateChange((event, session) => {
-			if (session?.user?.id !== $user?.id) {
+			if (session?.user?.id !== $user?.id || data.session?.user?.id !== session?.user?.id) {
 				invalidateAll();
 			}
 		});
 
-		offCanvas = new bootstrap.Offcanvas('#sidebarOffcanvas');
-
 		const cleanupBrowserListeners = await initializeNetworkListener();
 
-		
+		/*
         window.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
-		
+		*/
 
 		window.addEventListener('keydown', (e) => {
 			if (
