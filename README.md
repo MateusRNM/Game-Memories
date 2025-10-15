@@ -43,3 +43,11 @@
         </p>
         <p style="text-align:justify;">Este projeto foi desenvolvido utilizando o Svelte para o front-end em conjunto com o supabase para o back-end. Para distribuição, optei por utilizar o CapacitorJS e Tauri para empacotar o app para Android e Desktop, respectivamente. Ou seja, esse app é híbirido (construído com tecnologias web). Além disso, a API IGDB foi utilizada para realizar a busca de dados sobre os jogos.</p>
 </div>
+<hr>
+<div>
+    <h3 align="center">Screenshots:</h3>
+    <img src="./screenshots/screenshot1.png"><hr><br>
+    <img src="./screenshots/screenshot2.png"><hr><br>
+    <img src="./screenshots/screenshot3.png"><hr><br>
+    <img src="./screenshots/screenshot4.png">
+</div>
