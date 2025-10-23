@@ -1,6 +1,6 @@
 <script>
 	import { fly } from 'svelte/transition';
-	let { msg, action } = $props();
+	let { msg, confirmMsg, action } = $props();
 </script>
 
 <div data-bs-autohide={false} id="confirmToast" class="toast position-fixed top-50 start-50 translate-middle" role="alert" aria-live="assertive" aria-atomic="true" transition:fly={{ y: -50, duration: 300 }} style="z-index: 9999;">
@@ -8,7 +8,7 @@
     {msg}
     <div class="col m-2 border-top text-center">
         <button type="button" class="btn btn-primary" data-bs-dismiss="toast">CANCELAR</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="toast" onclick={action}>REMOVER</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="toast" onclick={action}>{confirmMsg}</button>
     </div>
   </div>
 </div>

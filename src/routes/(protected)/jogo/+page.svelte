@@ -129,7 +129,7 @@
     });
 </script>
 
-<ConfirmToast msg={"Você tem certeza que deseja remover este jogo do seu catálogo? (Todos os dados do jogo serão perdidos)"} action={remove}/>
+<ConfirmToast msg={"Você tem certeza que deseja remover este jogo do seu catálogo? (Todos os dados do jogo serão perdidos)"} confirmMsg={"REMOVER"} action={remove}/>
 
 <div class="page-background">
     {#if !$isOnline || data.offline}
@@ -224,7 +224,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="status" class="form-label">Anotações pessoais</label>
-                                                    <textarea bind:this={personalNotesElement} id="personalNotes" class="form-control" bind:value={personalNotes} readonly={isLoading || !$isOnline || data.offline}></textarea>
+                                                    <textarea bind:this={personalNotesElement} id="personalNotes" class="form-control" autocomplete="off" autocapitalize="off" spellcheck="false" bind:value={personalNotes} readonly={isLoading || !$isOnline || data.offline}></textarea>
                                                 </div>
                                             </div>
                                             <div class="d-flex gap-4 mt-4">

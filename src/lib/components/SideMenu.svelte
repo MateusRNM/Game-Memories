@@ -4,6 +4,12 @@
     import { user } from '$lib/database/authStore';
 	let { supabase } = $props();
 
+	let username = $state($user?.user_metadata.username);
+
+	user.subscribe((user) => {
+        username = user?.user_metadata.username;
+    })
+
 	async function handleSignOut() {
 		try {
 			await auth.signOut(supabase);
@@ -65,7 +71,7 @@
 				height="32"
 				class="rounded-circle me-2"
 			/>
-			<strong class="sidebar-text">{$user?.user_metadata.username}</strong>
+			<strong class="sidebar-text">{username}</strong>
 		</a>
 		<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
 			<li><a class="dropdown-item" href="/perfil">Perfil</a></li>
