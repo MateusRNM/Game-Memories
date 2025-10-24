@@ -15,6 +15,7 @@
 		"tauri:open": "tauri dev --"
 	},
 	"devDependencies": {
+		"@capacitor/assets": "^3.0.5",
 		"@eslint/compat": "^1.2.5",
 		"@eslint/js": "^9.22.0",
 		"@sveltejs/adapter-static": "^3.0.8",
@@ -37,7 +38,8 @@
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
-			"esbuild"
+			"esbuild",
+			"sharp"
 		]
 	},
 	"dependencies": {
@@ -56,6 +58,7 @@
 		"bootstrap": "5.3.8",
 		"bootstrap-icons": "^1.13.1",
 		"dotenv": "^17.2.2",
+		"sharp": "^0.34.4",
 		"svelte-dnd-action": "^0.9.65",
 		"tauri-plugin-network-api": "^2.0.5",
 		"tauri-plugin-store-api": "^0.0.0"
