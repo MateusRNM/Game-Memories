@@ -5,9 +5,7 @@
   "identifier": "com.mateusrnm.github.io.gamememories",
   "build": {
     "frontendDist": "../build",
-    "devUrl": "http://localhost:5173",
-    "beforeDevCommand": "pnpm run dev",
-    "beforeBuildCommand": "pnpm run build"
+    "devUrl": "http://localhost:5173"
   },
   "plugins": {
     "deep-link": {

@@ -1,6 +1,6 @@
 [package]
 name = "GameMemories"
-version = "0.1.0"
+version = "1.0.0"
 description = "Catalogue seus jogos"
 authors = ["Mateus Ribeiro Neves Martins"]
 license = ""
