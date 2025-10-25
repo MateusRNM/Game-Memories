@@ -1,6 +1,6 @@
 <h1 align="center">Game Memories</h1>
 <h3 align="center">Apresentação básica</h3>
-<p style="text-align:justify;">Este projeto se trata de um aplicativo feito para gamers que desejam catalogar jogos que estão jogando ou que já zeraram, permitindo que você visualize seu catálogo de jogos. Este projeto é 100% gratuito para utilizar e também open-source. Também aceito contribuições, sou estudante e é uma das minhas primeiras experiências desenvolvendo um projeto "completo" como esse.
+<p style="text-align:justify;">Este projeto se trata de um aplicativo feito para gamers que desejam catalogar jogos que estão jogando ou que já zeraram, permitindo que você visualize seu catálogo de jogos. Este projeto é 100% gratuito para utilizar e também open-source.
 <br><br>Plataformas disponíveis: Desktop e Android.</p>
 <br>
 <b><p style="text-align:justify;">Um agradecimento especial ao meu amigo e professor Ápio Carnielo e Silva por ter idealizado esse projeto.</p></b>
