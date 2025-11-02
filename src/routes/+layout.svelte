@@ -43,9 +43,11 @@
 
 		const cleanupBrowserListeners = await initializeNetworkListener();
 
+		/*
         window.addEventListener("contextmenu", (e) => {
             e.preventDefault();
         });
+		*/
 
 		window.addEventListener('keydown', (e) => {
 			if (
