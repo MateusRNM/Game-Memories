@@ -2,7 +2,6 @@
 	import 'bootstrap/dist/css/bootstrap.css';
 	import 'bootstrap-icons/font/bootstrap-icons.css';
 	import * as bootstrap from "bootstrap";
-	import favicon from '$lib/assets/favicon.svg';
 	import { user } from '$lib/database/authStore';
 	import SideMenu from '$lib/components/SideMenu.svelte';
 	import { navigating, page } from '$app/state';
@@ -122,7 +121,6 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 </svelte:head>
 
