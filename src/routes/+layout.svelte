@@ -122,6 +122,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 </svelte:head>
 
+<div class="safeArea">
 {#if !publicRoutes.includes(page.url.pathname)}
 	<nav class="navbar navbar-dark bg-custom-dark d-lg-none fixed-top">
 		<div class="container-fluid">
@@ -169,6 +170,7 @@
 	<main class="main-content">
 		{@render children?.()}
 	</main>
+</div>
 </div>
 
 <style>
@@ -256,14 +258,34 @@
 		transition: all 0.3s ease;
 	}
 
+	.safeArea {
+		width: 100dvw;
+		height: 100dvh;
+		padding: 0px;
+		margin: 0px;
+	}
+
 	@media (max-width: 991.98px) {
 		.app-layout {
 			display: block;
 		}
 		.main-content {
-			padding-top: 56px;
 			height: auto;
 			min-height: 100vh;
+		}
+		.sidebar-container {
+			height: 100dvh;
+		}
+		.safeArea {
+			padding-top:  calc(env(safe-area-inset-top));
+			padding-bottom: calc(env(safe-area-inset-bottom));
+		}
+		.navbar {
+			position: relative !important;
+		}
+		.offcanvas {
+			padding-top:  calc(env(safe-area-inset-top));
+			padding-bottom: calc(env(safe-area-inset-bottom));
 		}
 	}
 </style>

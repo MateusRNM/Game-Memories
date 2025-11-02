@@ -136,7 +136,7 @@
         transition: all 0.3s ease;
         margin-top: 1rem;
         position: fixed;
-        top: 90dvh;
+        top: 80dvh;
     }
     .deleteButton:hover {
         background-color: #910606;
