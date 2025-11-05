@@ -1,7 +1,18 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export async function searchGames(query: string) {
-    const response = await fetch(`${import.meta.env.VITE_SEARCH_GAMES_FUNCTION_URL}?q=${encodeURIComponent(query)}`);
+export async function searchGames(query: string, supabase: SupabaseClient) {
+    const {
+		data: { session }
+	} = await supabase.auth.getSession();
+	if (!session) {
+		throw new Error('Usuário não autenticado para realizar a busca.');
+	}
+
+    const response = await fetch(`${import.meta.env.VITE_SEARCH_GAMES_FUNCTION_URL}?q=${encodeURIComponent(query)}`, {
+        headers: {
+            Authorization: `Bearer ${session.access_token}`
+        }
+    });
     if(!response.ok){
         throw new Error('Falha ao buscar os dados!');
     }
@@ -9,8 +20,19 @@ export async function searchGames(query: string) {
     return data;
 }
 
-export async function searchFutureGames() {
-    const response = await fetch(`${import.meta.env.VITE_SEARCH_FUTURE_GAMES_FUNCTION_URL}`);
+export async function searchFutureGames(supabase: SupabaseClient) {
+    const {
+		data: { session }
+	} = await supabase.auth.getSession();
+	if (!session) {
+		throw new Error('Usuário não autenticado para realizar a busca.');
+	}
+
+    const response = await fetch(`${import.meta.env.VITE_SEARCH_FUTURE_GAMES_FUNCTION_URL}`, {
+        headers: {
+            Authorization: `Bearer ${session.access_token}`
+        }
+    });
     if(!response.ok){
         throw new Error('Falha ao buscar os dados!');
     }
@@ -19,6 +41,13 @@ export async function searchFutureGames() {
 }
 
 export async function getGameDetailsById(gameId: number, supabase: SupabaseClient) {
+    const {
+		data: { session }
+	} = await supabase.auth.getSession();
+	if (!session) {
+		throw new Error('Usuário não autenticado para realizar a busca.');
+	}
+
     let { data: cachedGame, error: cacheError } = await supabase.from('games_cache').select('*').eq('id', gameId).limit(1);
     if (cacheError && cacheError.code !== 'PGRST116') { 
         throw new Error(cacheError.message);
@@ -38,7 +67,11 @@ export async function getGameDetailsById(gameId: number, supabase: SupabaseClien
         };
     }
 
-    const response = await fetch(`${import.meta.env.VITE_SEARCH_GAMES_FUNCTION_URL}?gameId=${encodeURIComponent(gameId)}`);
+    const response = await fetch(`${import.meta.env.VITE_SEARCH_GAMES_FUNCTION_URL}?gameId=${encodeURIComponent(gameId)}`, {
+        headers: {
+            Authorization: `Bearer ${session.access_token}`
+        }
+    });
     if(!response.ok){
         throw new Error('Falha ao buscar os dados!');
     }

@@ -1,85 +1,123 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { auth } from '$lib/database/authStore';
-    import { user } from '$lib/database/authStore';
-	let { supabase } = $props();
-
-	let username = $state($user?.user_metadata.username);
-
-	user.subscribe((user) => {
-        username = user?.user_metadata.username;
-    })
-
-	async function handleSignOut() {
-		try {
-			await auth.signOut(supabase);
-		} catch (error) {
-			alert((error as Error).message);
-		}
-	}
+	import { user } from '$lib/database/authStore';
+	import Icon from '@iconify/svelte';	
+	let username = $derived($user?.user_metadata.username || 'Usuário');
 </script>
 
-<nav class="sidebar d-flex flex-column flex-shrink-0 p-3">
-	<a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-		<span class="fs-4 sidebar-text">Game <span style="color:#0B428B;">Memories</span></span>
+<nav
+	class="hidden lg:flex w-64 flex-col fixed inset-y-0 z-50 bg-black border-r border-white/10 font-oswald p-4"
+>
+	<a href="/" class="flex items-center gap-2 px-2 mb-6">
+		<span class="text-2xl font-bold text-white">Game <span class="text-blue-900">Memories</span></span>
 	</a>
-	<hr />
-	<ul class="nav nav-pills flex-column mb-auto">
-		<li class="nav-item">
+
+	<ul class="flex flex-col gap-2 flex-1">
+		<li>
 			<a
 				href="/inicio"
-				class="nav-link text-white"
-				class:active={page.url.pathname.startsWith('/inicio')}
+				class="flex items-center gap-3 rounded-lg px-3 py-3 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+				class:active-link={page.url.pathname.startsWith('/inicio')}
 			>
-				<i class="bi bi-house"></i>
-				<span class="sidebar-text">Início</span>
+				<Icon icon="bi:house" class="text-2xl" />
+				<span class="text-lg">Início</span>
 			</a>
 		</li>
-		<li class="nav-item">
+		<li>
 			<a
 				href="/searchGames"
-				class="nav-link text-white"
-				class:active={page.url.pathname.startsWith('/searchGames')}
+				class="flex items-center gap-3 rounded-lg px-3 py-3 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+				class:active-link={page.url.pathname.startsWith('/searchGames')}
 			>
-				<i class="bi bi-search me-2"></i>
-				<span class="sidebar-text">Pesquisar Jogos</span>
+				<Icon icon="bi:search" class="text-2xl" />
+				<span class="text-lg">Pesquisar</span>
 			</a>
 		</li>
 		<li>
 			<a
 				href="/catalogo"
-				class="nav-link text-white"
-				class:active={page.url.pathname.startsWith('/catalogo')}
+				class="flex items-center gap-3 rounded-lg px-3 py-3 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+				class:active-link={page.url.pathname.startsWith('/catalogo')}
 			>
-				<i class="bi bi-collection me-2"></i>
-				<span class="sidebar-text">Catálogo</span>
+				<Icon icon="bi:collection" class="text-2xl" />
+				<span class="text-lg">Catálogo</span>
 			</a>
 		</li>
 	</ul>
-	<hr />
-	<div class="dropdown">
+
+	<hr class="border-t border-white/10" />
+
+	<div class="mt-4">
 		<a
-			href="#"
-			class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-			data-bs-toggle="dropdown"
-			aria-expanded="false"
+			href="/perfil"
+			class="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-white/10"
+			class:active-link={page.url.pathname.startsWith('/perfil')}
 		>
 			<img
-				src="https://placehold.co/100x100/2B2B2B/FFFFFF?text=U"
-				alt=""
-				width="32"
-				height="32"
-				class="rounded-circle me-2"
+				src="https://placehold.co/100x100/2B2B2B/FFFFFF?text={username.charAt(0)}"
+				alt="Avatar"
+				class="h-10 w-10 rounded-full border-2 border-blue-900"
 			/>
-			<strong class="sidebar-text">{username}</strong>
+			<strong class="text-white">{username}</strong>
 		</a>
-		<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-			<li><a class="dropdown-item" href="/perfil">Perfil</a></li>
-			<li><hr class="dropdown-divider" /></li>
-			<li>
-				<button class="dropdown-item" onclick={handleSignOut}>Sair (Logout)</button>
-			</li>
-		</ul>
+
 	</div>
 </nav>
 
+<nav
+	class="lg:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-black border-t border-white/10 font-oswald"
+>
+	<ul class="grid h-full grid-cols-4">
+		<li>
+			<a
+				href="/inicio"
+				class="flex h-full flex-col items-center justify-center text-white/70"
+				class:active-link-mobile={page.url.pathname.startsWith('/inicio')}
+			>
+				<Icon icon="bi:house" class="text-2xl" />
+				<span class="text-xs">Início</span>
+			</a>
+		</li>
+		<li>
+			<a
+				href="/searchGames"
+				class="flex h-full flex-col items-center justify-center text-white/70"
+				class:active-link-mobile={page.url.pathname.startsWith('/searchGames')}
+			>
+				<Icon icon="bi:search" class="text-2xl" />
+				<span class="text-xs">Pesquisar</span>
+			</a>
+		</li>
+		<li>
+			<a
+				href="/catalogo"
+				class="flex h-full flex-col items-center justify-center text-white/70"
+				class:active-link-mobile={page.url.pathname.startsWith('/catalogo')}
+			>
+				<Icon icon="bi:collection" class="text-2xl" />
+				<span class="text-xs">Catálogo</span>
+			</a>
+		</li>
+		<li>
+			<a
+				href="/perfil"
+				class="flex h-full flex-col items-center justify-center text-white/70"
+				class:active-link-mobile={page.url.pathname.startsWith('/perfil')}
+			>
+				<Icon icon="bi:person-circle" class="text-2xl" />
+				<span class="text-xs">Perfil</span>
+			</a>
+		</li>
+	</ul>
+</nav>
+
+<style>
+	.active-link {
+		background-color: #0b428b;
+		color: white !important;
+	}
+
+	.active-link-mobile {
+		color: #0b428b !important;
+	}
+</style>

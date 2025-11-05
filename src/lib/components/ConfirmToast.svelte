@@ -1,73 +1,55 @@
-<script>
+<script lang="ts">
 	import { fly } from 'svelte/transition';
-	let { msg, confirmMsg, action } = $props();
+	let { msg, confirmMsg, action, opened = $bindable() } = $props();
 </script>
 
-<div data-bs-autohide={false} id="confirmToast" class="toast position-fixed top-50 start-50 translate-middle" role="alert" aria-live="assertive" aria-atomic="true" transition:fly={{ y: -50, duration: 300 }} style="z-index: 9999;">
-  <div class="toast-body">
-    {msg}
-    <div class="col m-2 border-top text-center">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="toast">CANCELAR</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="toast" onclick={action}>{confirmMsg}</button>
-    </div>
-  </div>
-</div>
+{#if opened}
+	<div
+		class="toast-container fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4"
+		style="z-index: 9999;"
+		transition:fly={{ y: -50, duration: 300 }}
+	>
+		<div
+			class="toast-content flex w-full max-w-sm flex-col rounded-xl border border-white/20 bg-black shadow-2xl"
+			role="alert"
+			aria-live="assertive"
+			aria-atomic="true"
+		>
+			<div class="toast-body p-4 text-center text-lg text-white">
+				{msg}
+				<div class="mt-4 border-t border-black/50 pt-4">
+					<div class="flex gap-3">
+						<button
+							type="button"
+							class="btn-secondary flex-1 rounded-lg bg-gray-600 px-4 py-3 text-sm font-bold uppercase text-white transition-all duration-200 ease-in-out hover:bg-gray-500"
+							onclick={() => opened = false}
+						>
+							CANCELAR
+						</button>
+						<button
+							type="button"
+							class="btn-danger flex-1 rounded-lg bg-red-700 px-4 py-3 text-sm font-bold uppercase text-white transition-all duration-200 ease-in-out hover:bg-red-600"
+							onclick={() => {
+								opened = false;
+								action();
+							}}
+						>
+							{confirmMsg}
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{/if}
 
 <style>
-    .toast {
-        background-color: #1a1a1a;
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-        border-radius: 1rem; 
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5); 
-        border: 1px solid #2c2c2c;
-        transition: all 0.3s ease;
-        margin-top: 1rem;
-        width: 30rem;
-    }
-    .toast-body {
-        font-size: 1rem;
-    }
-    .btn-primary {
-        width: 100%;
-        padding: 0.8rem;
-        background-color: #007bff;
-        color: #ffffff;
-        border: none;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: all 0.3s ease;
-        margin-top: 1rem;
-    }
-    .btn-primary:hover {
-        background-color: #0056b3;
-        border-color: #0B428B;
-        box-shadow: 0.3rem 0.3rem 0.3rem 0.3rem #0b428b6b;
-        transform: translateY(-2px);
-    }
-    .btn-danger {
-        width: 50%;
-        padding: 0.8rem;
-        background-color: #b90707;
-        color: #ffffff;
-        border: none;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: all 0.3s ease;
-        margin-top: 6rem;
-    }
-    .btn-danger:hover {
-        background-color: #910606;
-        border-color: #790303;
-        box-shadow: 0.3rem 0.3rem 0.3rem 0.3rem #630202;
-        transform: translateY(-2px);
-    }
+	.btn-secondary:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+	}
+	.btn-danger:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 15px rgba(185, 7, 7, 0.3);
+	}
 </style>

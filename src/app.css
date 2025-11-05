@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@font-face {
+	font-family: 'mainFont';
+	src: url('./lib/assets/fonts/mainFont.ttf');
+}
+
+body {
+    font-family: 'main-font', sans-serif;
+    color: white;
+}
