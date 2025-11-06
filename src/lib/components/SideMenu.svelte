@@ -121,6 +121,8 @@
 		color: #0b428b !important;
 	}
 	.mobileNav {
-		height: calc(10.5vh + env(safe-area-inset-bottom));
+		margin-bottom: env(safe-area-inset-bottom);
+		margin-right: env(safe-area-inset-right);
+		margin-left: env(safe-area-inset-left);
 	}
 </style>

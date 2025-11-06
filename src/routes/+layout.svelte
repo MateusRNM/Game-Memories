@@ -107,7 +107,7 @@
 </script>
 
 <svelte:head>
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 </svelte:head>
 
 <div class="safeArea">
@@ -168,16 +168,14 @@
 	}
 
 	.safeArea {
-		width: 100dvw;
-		height: 100dvh;
-		padding: 0px;
-		margin-top: env(safe-area-inset-top);
+		width: 100vw;
+		height: 100vh;
+		padding-top: env(safe-area-inset-top);
 	}
 
 	@media (max-width: 1023.98px) {
 		.main-content {
-			height: auto;
-			max-height: calc(100vh - calc(10.5vh + env(safe-area-inset-bottom)));
+			height: calc(98vh - calc(calc(var(--spacing) * 16) + env(safe-area-inset-bottom)));
 		}
 	}
 
