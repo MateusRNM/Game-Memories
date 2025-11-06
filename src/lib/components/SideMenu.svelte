@@ -6,7 +6,7 @@
 </script>
 
 <nav
-	class="hidden lg:flex w-64 flex-col fixed inset-y-0 z-50 bg-black border-r border-white/10 font-oswald p-4"
+	class="hidden lg:flex w-64 flex-col fixed inset-y-0 z-50 bg-black border-r border-white/10 p-4"
 >
 	<a href="/" class="flex items-center gap-2 px-2 mb-6">
 		<span class="text-2xl font-bold text-white">Game <span class="text-blue-900">Memories</span></span>
@@ -65,7 +65,7 @@
 </nav>
 
 <nav
-	class="lg:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-black border-t border-white/10 font-oswald"
+	class="lg:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-black border-t border-white/10 mobileNav"
 >
 	<ul class="grid h-full grid-cols-4">
 		<li>
@@ -119,5 +119,8 @@
 
 	.active-link-mobile {
 		color: #0b428b !important;
+	}
+	.mobileNav {
+		height: calc(10.5vh + env(safe-area-inset-bottom));
 	}
 </style>

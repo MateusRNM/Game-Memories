@@ -112,7 +112,7 @@
 
 <div class="safeArea">
 	{#if !publicRoutes.includes(page.url.pathname)}
-		<SideMenu supabase={data.supabase} />
+		<SideMenu />
 	{/if}
 	<main class="main-content">
 		{@render children?.()}
@@ -171,18 +171,13 @@
 		width: 100dvw;
 		height: 100dvh;
 		padding: 0px;
-		margin: 0px;
+		margin-top: env(safe-area-inset-top);
 	}
 
 	@media (max-width: 1023.98px) {
 		.main-content {
 			height: auto;
-			min-height: 100vh;
-			padding-bottom: 4rem;
-		}
-		.safeArea {
-			padding-top:  env(safe-area-inset-top);
-			padding-bottom: env(safe-area-inset-bottom);
+			max-height: calc(100vh - calc(10.5vh + env(safe-area-inset-bottom)));
 		}
 	}
 
